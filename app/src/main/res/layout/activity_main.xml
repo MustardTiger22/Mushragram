@@ -23,7 +23,8 @@
                 android:layout_height="174dp"
                 android:layout_marginStart="99dp"
                 android:layout_marginTop="60dp"
-                android:layout_marginEnd="99dp" />
+                android:layout_marginEnd="99dp"
+                app:srcCompat="@drawable/googleg_standard_color_18" />
 
             <EditText
                 android:id="@+id/email"
@@ -33,30 +34,19 @@
                 android:layout_marginTop="42dp"
                 android:layout_marginEnd="15dp"
                 android:ems="10"
-                android:hint="Adres e-mail"
-                android:inputType="textPersonName" />
+                android:hint="Adres e-mail" />
 
             <EditText
                 android:id="@+id/password"
                 android:layout_width="380dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="13dp"
+                android:layout_marginTop="21dp"
                 android:layout_marginEnd="15dp"
                 android:ems="10"
                 android:hint="Hasło"
-                android:inputType="textPersonName" />
-
-            <TextView
-                android:id="@+id/error"
-                android:layout_width="380dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="21dp"
-                android:layout_marginEnd="15dp"
-                android:textAlignment="center"
-                android:textColor="#C10606"
-                android:textSize="18sp" />
+                android:inputType="textPassword"
+                android:textAlignment="viewStart" />
 
             <Button
                 android:id="@+id/buttonSignin"
