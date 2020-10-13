@@ -1,4 +1,4 @@
-package com.dominikp.mobileapp;
+package com.dominikp.mobileapp.activity;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,7 +10,10 @@ import android.os.Handler;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
-import com.dominikp.mobileapp.databinding.ActivityUploadBinding;
+
+import com.dominikp.mobileapp.R;
+import com.dominikp.mobileapp.model.Upload;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -28,17 +31,18 @@ public class UploadActivity extends AppCompatActivity implements View.OnClickLis
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
     private FirebaseUser mUser;
-    private ActivityUploadBinding binding;
+    private com.dominikp.mobileapp.databinding.ActivityUploadBinding binding;
     private StorageTask mUploadTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityUploadBinding.inflate(getLayoutInflater());
+        binding = com.dominikp.mobileapp.databinding.ActivityUploadBinding.inflate(getLayoutInflater());
 
         binding.buttonChooseImage.setOnClickListener(this);
         binding.buttonUpload.setOnClickListener(this);
+        binding.showUploads.setOnClickListener(this);
 
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
@@ -61,7 +65,7 @@ public class UploadActivity extends AppCompatActivity implements View.OnClickLis
                     openFileChooser();
                 break;
             case R.id.showUploads:
-
+                    openImagesActivity();
                 break;
         }
     }
@@ -100,26 +104,41 @@ public class UploadActivity extends AppCompatActivity implements View.OnClickLis
             mUploadTask = fileReference.putFile(mImageUri)
                     .addOnSuccessListener(task -> {
                         Handler handler = new Handler();
-                        handler.postDelayed(() -> binding.progressBar.setProgress(0), 5000);
+                        handler.postDelayed(() -> binding.progressBar.setProgress(0), 500);
 
                         Toast.makeText(this, "Zdjęcie zostało wrzucone.", Toast.LENGTH_LONG).show();
+
+                        //Uzyskanie adres URL zdjecia
+                        Task<Uri> urlTask = task.getStorage().getDownloadUrl();
+                        while (!urlTask.isSuccessful());
+                            Uri downloadUrl = urlTask.getResult();
 
                         Upload upload = new Upload(
                                 mUser.getUid(),
                                 binding.fileName.getText().toString().trim(),
-                                task.getUploadSessionUri().toString());
+                                downloadUrl.toString());
 
                         String uploadId = mDatabaseRef.push().getKey();
                         mDatabaseRef.child(uploadId).setValue(upload);
+
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             })
                     .addOnProgressListener(task -> {
-                binding.progressBar.setProgress((int) (100.0 * task.getBytesTransferred() / task.getTotalByteCount()));
+                        double progress = 100.0 * task.getBytesTransferred() / task.getTotalByteCount();
+                        binding.progressBar.setProgress((int) progress);
             });
+
+
         } else {
             Toast.makeText(this, "Nie zostało wybrane zdjęcie.", Toast.LENGTH_SHORT).show();
         }
+
+
+    }
+
+    private void openImagesActivity() {
+        startActivity(new Intent(this, ImagesActivity.class));
     }
 }

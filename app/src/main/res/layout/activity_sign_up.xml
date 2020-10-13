@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SignUpActivity" >
+    tools:context=".activity.SignUpActivity" >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,11 +17,22 @@
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/email"
+                android:id="@+id/displayName"
                 android:layout_width="380dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="159dp"
+                android:layout_marginEnd="15dp"
+                android:ems="10"
+                android:hint="Nazwa użytkownika"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="380dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="15dp"
                 android:ems="10"
                 android:hint="Adres e-mail"

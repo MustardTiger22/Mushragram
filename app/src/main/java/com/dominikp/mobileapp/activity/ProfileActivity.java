@@ -1,4 +1,4 @@
-package com.dominikp.mobileapp;
+package com.dominikp.mobileapp.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.dominikp.mobileapp.R;
 import com.dominikp.mobileapp.databinding.ActivityProfileBinding;
 import com.google.firebase.auth.FirebaseAuth;
 

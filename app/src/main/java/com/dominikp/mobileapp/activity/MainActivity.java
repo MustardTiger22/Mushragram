@@ -1,10 +1,12 @@
-package com.dominikp.mobileapp;
+package com.dominikp.mobileapp.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+
+import com.dominikp.mobileapp.R;
 import com.dominikp.mobileapp.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -16,6 +18,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+
+        if(FirebaseAuth.getInstance().getCurrentUser()!= null) {
+            startActivity(new Intent(this, ProfileActivity.class));
+        }
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         binding.buttonSignin.setOnClickListener(this);

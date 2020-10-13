@@ -1,9 +1,10 @@
-package com.dominikp.mobileapp;
+package com.dominikp.mobileapp.model;
 
 public class Upload {
     private String mUserId;
     private String mTitle;
     private String mImageUrl;
+    private String mKey;
 
     public Upload() {
     }
@@ -40,5 +41,13 @@ public class Upload {
 
     public void setImageUrl(String mImageUrl) {
         this.mImageUrl = mImageUrl;
+    }
+
+    public String getKey() {
+        return mKey;
+    }
+
+    public void setKey(String mKey) {
+        this.mKey = mKey;
     }
 }

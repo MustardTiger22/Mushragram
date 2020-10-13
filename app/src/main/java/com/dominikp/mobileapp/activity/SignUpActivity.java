@@ -1,4 +1,4 @@
-package com.dominikp.mobileapp;
+package com.dominikp.mobileapp.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
@@ -7,14 +7,22 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.dominikp.mobileapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.ConfirmPassword;
 import com.mobsandgeeks.saripaar.annotation.Email;
+import com.mobsandgeeks.saripaar.annotation.Max;
+import com.mobsandgeeks.saripaar.annotation.Min;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Password;
+import com.mobsandgeeks.saripaar.annotation.Pattern;
+
 import java.util.List;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener, Validator.ValidationListener {
@@ -22,6 +30,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private Validator validator;
     private ProgressBar progressBar;
 
+    @NotEmpty(message = "Nazwa użytkownika nie może być pusta.")
+    @Min(value = 5, message = "Minimum 5 znaków.")
+    @Max(value = 20, message = "Maksymalnie 20 znaków.")
+    @Pattern(regex = "/^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*{5,20}$", message = "Nieprawidłowa nazwa")
+    private EditText displayName;
     @NotEmpty(message = "Adres e-mail nie może być pusty.")
     @Email(message = "Nieprawidłowy adres e-mail.")
     private EditText email;
@@ -39,6 +52,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         password = findViewById(R.id.password);
         confirmPassword = findViewById(R.id.confirmPassword);
         progressBar = findViewById(R.id.progressBar);
+        displayName = findViewById(R.id.displayName);
 
         validator = new Validator(this);
         validator.setValidationListener(this);
@@ -72,6 +86,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 .addOnCompleteListener(this, task -> {
                     progressBar.setVisibility(View.GONE);
                     if (task.isSuccessful()) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                .setDisplayName(displayName.getText().toString().trim())
+                                .build();
+
+                        user.updateProfile(profileUpdates);
                         startActivity(new Intent(this, MainActivity.class));
                     } else {
                         if(task.getException() instanceof FirebaseAuthUserCollisionException) {
