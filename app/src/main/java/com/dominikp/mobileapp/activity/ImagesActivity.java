@@ -11,11 +11,14 @@ import android.widget.Toast;
 import com.dominikp.mobileapp.adapter.ImageAdapter;
 import com.dominikp.mobileapp.model.Upload;
 import com.dominikp.mobileapp.databinding.ActivityImagesBinding;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +27,8 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
     private ActivityImagesBinding binding;
     private ImageAdapter mAdapter;
     private DatabaseReference mDatabaseRef;
+    private FirebaseStorage mStorage;
+    private ValueEventListener mDBListener;
     private List<Upload> mUploads;
 
     @Override
@@ -37,18 +42,31 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
 
         mUploads = new ArrayList<>();
 
+        mAdapter = new ImageAdapter(ImagesActivity.this, mUploads);
+
+        binding.recyclerView.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(ImagesActivity.this);
+
+        mStorage = FirebaseStorage.getInstance();
+
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
 
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+        mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //W celu zapobiegnięcia zdublikowania danych podczas zmian tablica zostaje wyczyszczona
+                mUploads.clear();
+
                 for(DataSnapshot postSnapshot : snapshot.getChildren()) {
                     Upload upload = postSnapshot.getValue(Upload.class);
+                    upload.setKey(postSnapshot.getKey());
                     mUploads.add(upload);
                 }
-                mAdapter = new ImageAdapter(ImagesActivity.this, mUploads);
-                binding.recyclerView.setAdapter(mAdapter);
-                mAdapter.setOnItemClickListener(ImagesActivity.this);
+
+                //Zaktualizuj adapter jezeli wystapily zmiany
+                mAdapter.notifyDataSetChanged();
+
                 binding.progressCircle.setVisibility(View.INVISIBLE);
             }
 
@@ -74,6 +92,19 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
 
     @Override
     public void onDeleteClick(int position) {
+        Upload selectedItem = mUploads.get(position);
+        String selectedKey = selectedItem.getKey();
 
+        StorageReference imageRef = mStorage.getReferenceFromUrl(selectedItem.getImageUrl());
+        imageRef.delete().addOnSuccessListener(aVoid -> {
+            mDatabaseRef.child(selectedKey).removeValue();
+            Toast.makeText(this, "Grzyb usunięty", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDatabaseRef.removeEventListener(mDBListener);
     }
 }

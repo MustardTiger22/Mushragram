@@ -1,5 +1,7 @@
 package com.dominikp.mobileapp.model;
 
+import com.google.firebase.database.Exclude;
+
 public class Upload {
     private String mUserId;
     private String mTitle;
@@ -43,10 +45,12 @@ public class Upload {
         this.mImageUrl = mImageUrl;
     }
 
+    @Exclude
     public String getKey() {
         return mKey;
     }
 
+    @Exclude
     public void setKey(String mKey) {
         this.mKey = mKey;
     }

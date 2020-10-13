@@ -31,9 +31,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private ProgressBar progressBar;
 
     @NotEmpty(message = "Nazwa użytkownika nie może być pusta.")
-    @Min(value = 5, message = "Minimum 5 znaków.")
-    @Max(value = 20, message = "Maksymalnie 20 znaków.")
-    @Pattern(regex = "/^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*{5,20}$", message = "Nieprawidłowa nazwa")
+//    @Pattern(regex = "/^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$", message = "Nieprawidłowa nazwa")
     private EditText displayName;
     @NotEmpty(message = "Adres e-mail nie może być pusty.")
     @Email(message = "Nieprawidłowy adres e-mail.")

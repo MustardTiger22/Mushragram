@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dominikp.mobileapp.R;
 import com.dominikp.mobileapp.model.Upload;
+import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -79,13 +81,19 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         }
 
         @Override
-        public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+        public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle("Co chcesz zrobic?");
             MenuItem likePhoto = menu.add(Menu.NONE, 1, 1, "Polub");
-            MenuItem delete = menu.add(Menu.NONE, 2, 2, "Usuń");
 
+            //Uzyskanie pozycji wiersza w adapterze
+            int position = getLayoutPosition();
+
+            //Sprawdzenie, czy dodany post należy do użytkownika
+            if(mUploads.get(position).getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                MenuItem delete = menu.add(Menu.NONE, 2, 2, "Usuń");
+                delete.setOnMenuItemClickListener(this);
+            }
             likePhoto.setOnMenuItemClickListener(this);
-            delete.setOnMenuItemClickListener(this);
         }
 
         @Override
