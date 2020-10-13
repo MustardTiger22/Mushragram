@@ -8,12 +8,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.dominikp.mobileapp.databinding.ActivityProfileBinding;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class ProfileActivity extends AppCompatActivity {
-    private FirebaseAuth mAuth;
+public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
     private ActivityProfileBinding binding;
 
     @Override
@@ -22,7 +22,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         binding = ActivityProfileBinding.inflate(getLayoutInflater());
 
-        mAuth = FirebaseAuth.getInstance();
+        binding.upload.setOnClickListener(this);
 
         setSupportActionBar(binding.toolbar);
 
@@ -48,4 +48,12 @@ public class ProfileActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.upload:
+                startActivity(new Intent(this, UploadActivity.class));
+            break;
+        }
+    }
 }
