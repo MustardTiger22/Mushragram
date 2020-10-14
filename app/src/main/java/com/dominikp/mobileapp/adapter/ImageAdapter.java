@@ -1,24 +1,24 @@
 package com.dominikp.mobileapp.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.dominikp.mobileapp.R;
 import com.dominikp.mobileapp.model.Upload;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
@@ -41,7 +41,18 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         Upload uploadCurrent = mUploads.get(position);
+
         holder.textViewName.setText(uploadCurrent.getTitle());
+        holder.textViewAuthor.setText(uploadCurrent.getAuthor());
+        holder.textViewLikeCounter.setText(String.valueOf(uploadCurrent.getLikes().size()));
+
+
+        if(uploadCurrent.getLikes().containsKey(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+            holder.imageHeart.setColorFilter(Color.RED);
+        } else {
+            holder.imageHeart.setColorFilter(Color.GRAY);
+        }
+
         Picasso.get()
                 .load(uploadCurrent.getImageUrl())
                 .placeholder(R.mipmap.ic_launcher)
@@ -58,13 +69,19 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     public class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener,
             MenuItem.OnMenuItemClickListener {
         public TextView textViewName;
+        public TextView textViewLikeCounter;
+        public TextView textViewAuthor;
         public ImageView imageView;
+        public ImageView imageHeart;
 
         public ImageViewHolder(@NonNull View itemView) {
             super(itemView);
 
             textViewName = itemView.findViewById(R.id.imageName);
             imageView = itemView.findViewById(R.id.imageViewUpload);
+            imageHeart = itemView.findViewById(R.id.heartImageView);
+            textViewAuthor = itemView.findViewById(R.id.authorTextView);
+            textViewLikeCounter = itemView.findViewById(R.id.likeCounterTextView);
 
             itemView.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);
@@ -82,14 +99,23 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
+            MenuItem likePhoto;
             menu.setHeaderTitle("Co chcesz zrobic?");
-            MenuItem likePhoto = menu.add(Menu.NONE, 1, 1, "Polub");
 
-            //Uzyskanie pozycji wiersza w adapterze
+            //Uzyskanie aktualnie wskazanego obiektu (wiersza) w adapterze
             int position = getLayoutPosition();
+            Upload currentRow = mUploads.get(position);
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+            if(!currentRow.getLikes().containsKey(user.getUid())) {
+                likePhoto = menu.add(Menu.NONE, 1, 1, "Polub");
+            }
+            else {
+                likePhoto = menu.add(Menu.NONE, 1, 1, "Odlub");
+            }
 
             //Sprawdzenie, czy dodany post należy do użytkownika
-            if(mUploads.get(position).getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+            if(currentRow.getUserId().equals(user.getUid())) {
                 MenuItem delete = menu.add(Menu.NONE, 2, 2, "Usuń");
                 delete.setOnMenuItemClickListener(this);
             }

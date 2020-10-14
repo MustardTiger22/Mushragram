@@ -14,11 +14,16 @@
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme" />
 
-    <Button
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/upload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:text="Wrzutka" />
+        app:backgroundTint="@android:color/transparent"
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="15dp"
+        app:maxImageSize="56dp"
+        android:clickable="true"
+        app:srcCompat="@drawable/ic_mushroom" />
 
 </RelativeLayout>

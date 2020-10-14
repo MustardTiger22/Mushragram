@@ -7,28 +7,29 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import com.dominikp.mobileapp.R;
+import com.dominikp.mobileapp.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.ConfirmPassword;
 import com.mobsandgeeks.saripaar.annotation.Email;
-import com.mobsandgeeks.saripaar.annotation.Max;
-import com.mobsandgeeks.saripaar.annotation.Min;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Password;
-import com.mobsandgeeks.saripaar.annotation.Pattern;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener, Validator.ValidationListener {
     private FirebaseAuth mAuth;
     private Validator validator;
     private ProgressBar progressBar;
+    private DatabaseReference mDatabaseRef;
 
     @NotEmpty(message = "Nazwa użytkownika nie może być pusta.")
 //    @Pattern(regex = "/^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$", message = "Nieprawidłowa nazwa")
@@ -56,6 +57,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         validator.setValidationListener(this);
 
         mAuth = FirebaseAuth.getInstance();
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("users");
 
         findViewById(R.id.buttonRegister).setOnClickListener(this);
         findViewById(R.id.buttonBack).setOnClickListener(this);
@@ -84,12 +86,22 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 .addOnCompleteListener(this, task -> {
                     progressBar.setVisibility(View.GONE);
                     if (task.isSuccessful()) {
-                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        FirebaseUser user = mAuth.getCurrentUser();
+
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setDisplayName(displayName.getText().toString().trim())
                                 .build();
 
                         user.updateProfile(profileUpdates);
+
+                        // Zapisanie użytkownika do bazy
+                        User userDb = User.builder()
+                                .email(email)
+                                .displayName(displayName.getText().toString().trim())
+                                .createdAt(LocalDateTime.now().toString())
+                                .build();
+                        mDatabaseRef.child(user.getUid()).setValue(userDb);
+                        // Przeniesienie do głownej aktywnosci
                         startActivity(new Intent(this, MainActivity.class));
                     } else {
                         if(task.getException() instanceof FirebaseAuthUserCollisionException) {
@@ -99,6 +111,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         }
                     }
                 });
+
     }
 
     @Override

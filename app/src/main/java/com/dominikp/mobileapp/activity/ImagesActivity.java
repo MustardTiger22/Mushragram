@@ -4,14 +4,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.dominikp.mobileapp.R;
 import com.dominikp.mobileapp.adapter.ImageAdapter;
 import com.dominikp.mobileapp.model.Upload;
 import com.dominikp.mobileapp.databinding.ActivityImagesBinding;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,6 +26,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ImagesActivity extends AppCompatActivity implements ImageAdapter.OnItemClickListener {
@@ -28,6 +34,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
     private ImageAdapter mAdapter;
     private DatabaseReference mDatabaseRef;
     private FirebaseStorage mStorage;
+    private FirebaseUser mUser;
     private ValueEventListener mDBListener;
     private List<Upload> mUploads;
 
@@ -50,6 +57,8 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
 
         mStorage = FirebaseStorage.getInstance();
 
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
 
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
@@ -61,6 +70,10 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
                 for(DataSnapshot postSnapshot : snapshot.getChildren()) {
                     Upload upload = postSnapshot.getValue(Upload.class);
                     upload.setKey(postSnapshot.getKey());
+                    if(upload.getLikes() == null) {
+                        upload.setLikes(new HashMap<>());
+
+                    }
                     mUploads.add(upload);
                 }
 
@@ -82,12 +95,32 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
 
     @Override
     public void onItemClick(int position) {
-
+        onLikeClick(position);
     }
 
     @Override
     public void onLikeClick(int position) {
+        Upload selectedItem = mUploads.get(position);
+        String selectedKey = selectedItem.getKey();
 
+        if(!selectedItem.getLikes().containsKey(mUser.getUid())) {
+            mDatabaseRef
+                    .child(selectedKey)
+                    .child("likes")
+                    .child(mUser.getUid())
+                    .setValue(true).addOnSuccessListener(aVoid -> {
+                        selectedItem.getLikes().put(mUser.getUid(), true);
+            });
+        } else {
+            mDatabaseRef
+                    .child(selectedKey)
+                    .child("likes")
+                    .child(mUser.getUid())
+                    .removeValue()
+                    .addOnSuccessListener(aVoid -> {
+                        selectedItem.getLikes().remove(mUser.getUid());
+                    });
+        }
     }
 
     @Override

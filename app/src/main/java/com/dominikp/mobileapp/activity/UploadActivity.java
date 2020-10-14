@@ -10,9 +10,9 @@ import android.os.Handler;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
-
 import com.dominikp.mobileapp.R;
 import com.dominikp.mobileapp.model.Upload;
+import com.dominikp.mobileapp.databinding.ActivityUploadBinding;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,6 +23,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class UploadActivity extends AppCompatActivity implements View.OnClickListener {
@@ -31,14 +35,14 @@ public class UploadActivity extends AppCompatActivity implements View.OnClickLis
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
     private FirebaseUser mUser;
-    private com.dominikp.mobileapp.databinding.ActivityUploadBinding binding;
+    private ActivityUploadBinding binding;
     private StorageTask mUploadTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = com.dominikp.mobileapp.databinding.ActivityUploadBinding.inflate(getLayoutInflater());
+        binding = ActivityUploadBinding.inflate(getLayoutInflater());
 
         binding.buttonChooseImage.setOnClickListener(this);
         binding.buttonUpload.setOnClickListener(this);
@@ -113,14 +117,19 @@ public class UploadActivity extends AppCompatActivity implements View.OnClickLis
                         while (!urlTask.isSuccessful());
                             Uri downloadUrl = urlTask.getResult();
 
+                        //Użytkownik automatycznie lubi swoje zdjęcie
+                        HashMap<String, Boolean> likes = new HashMap<>();
+                        likes.put(mUser.getUid(), true);
+
                         Upload upload = new Upload(
                                 mUser.getUid(),
                                 binding.fileName.getText().toString().trim(),
-                                downloadUrl.toString());
+                                mUser.getDisplayName(),
+                                downloadUrl.toString(),
+                                likes);
 
                         String uploadId = mDatabaseRef.push().getKey();
                         mDatabaseRef.child(uploadId).setValue(upload);
-
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
