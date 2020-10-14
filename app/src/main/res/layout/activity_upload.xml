@@ -10,7 +10,10 @@
         android:id="@+id/buttonChooseImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Wybierz zdjęcie" />
+        android:text="Wybierz zdjęcie"
+        android:padding="16dp"
+        android:background="@color/colorPurple"
+        android:textColor="@color/colorWhite" />
 
     <EditText
         android:id="@+id/fileName"
@@ -28,8 +31,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="15dp"
-        android:text="Wrzuć"/>
+        android:padding="16dp"
+        android:background="@color/colorPurple"
+        android:textColor="@color/colorWhite"
+        android:text="Wrzuć"
+        />
 
     <ImageView
         android:id="@+id/imageView"

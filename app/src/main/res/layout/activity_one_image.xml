@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:layout_height="match_parent"
+    tools:context=".activity.OneImageActivity"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,24 +13,24 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/authorTextView"
+            android:id="@+id/authorTextViewOneImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:textColor="@android:color/black"
             android:paddingLeft="10dp"
             android:paddingTop="5dp"
+            android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/imageViewUpload"
+            android:id="@+id/imageViewOneImage"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:layout_marginTop="6dp" />
 
         <LinearLayout
-            android:id="@+id/description"
+            android:id="@+id/descriptionOneImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="4dp">
@@ -52,15 +54,33 @@
                 app:srcCompat="@drawable/ic_heart_shape" />
 
             <TextView
-                android:id="@+id/likeCounterTextView"
+                android:id="@+id/likeCounterTextViewOneImage"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".1"
                 android:textAlignment="textStart"
                 android:textSize="16sp" />
-
-
         </LinearLayout>
-    </LinearLayout>
+        </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewOneImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/commentEditTextOneImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Twój komentarz" />
+
+    <Button
+        android:id="@+id/buttonSendCommentOneImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Wyślij"
+        android:padding="16dp"
+        android:background="@color/colorPurple"
+        android:textColor="@color/colorWhite"/>
+
+</LinearLayout>

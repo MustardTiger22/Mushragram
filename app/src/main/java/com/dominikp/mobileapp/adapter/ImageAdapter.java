@@ -10,14 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.dominikp.mobileapp.R;
 import com.dominikp.mobileapp.model.Upload;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 import java.util.List;
 
@@ -84,6 +83,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             textViewLikeCounter = itemView.findViewById(R.id.likeCounterTextView);
 
             itemView.setOnClickListener(this);
+            imageHeart.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);
         }
 
@@ -92,7 +92,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             if(mListener != null) {
                 int position = getAdapterPosition();
                 if(position != RecyclerView.NO_POSITION) {
-                    mListener.onItemClick(position);
+                    switch (view.getId()) {
+                        case R.id.heartImageView:
+                            mListener.onPlusClick(position);
+                            break;
+                        default:
+                            mListener.onItemClick(position);
+                            break;
+                    }
                 }
             }
         }
@@ -144,6 +151,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     public interface OnItemClickListener {
         void onItemClick(int position);
+
+        void onPlusClick(int position);
 
         void onLikeClick(int position);
 

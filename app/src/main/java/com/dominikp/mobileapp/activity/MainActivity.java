@@ -5,9 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
-
-import com.dominikp.mobileapp.R;
 import com.dominikp.mobileapp.databinding.ActivityMainBinding;
+import com.dominikp.mobileapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {

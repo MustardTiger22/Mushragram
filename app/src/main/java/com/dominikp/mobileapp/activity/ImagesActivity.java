@@ -4,17 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
-
-import com.dominikp.mobileapp.R;
 import com.dominikp.mobileapp.adapter.ImageAdapter;
 import com.dominikp.mobileapp.model.Upload;
 import com.dominikp.mobileapp.databinding.ActivityImagesBinding;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,7 +20,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -95,7 +90,12 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
 
     @Override
     public void onItemClick(int position) {
-        onLikeClick(position);
+        Upload selectedItem = mUploads.get(position);
+        String selectedKey = selectedItem.getKey();
+
+        Intent intent = new Intent(this, OneImageActivity.class);
+        intent.putExtra("itemKey", selectedKey);
+        startActivity(intent);
     }
 
     @Override
@@ -121,6 +121,11 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
                         selectedItem.getLikes().remove(mUser.getUid());
                     });
         }
+    }
+
+    @Override
+    public void onPlusClick(int position) {
+        onLikeClick(position);
     }
 
     @Override

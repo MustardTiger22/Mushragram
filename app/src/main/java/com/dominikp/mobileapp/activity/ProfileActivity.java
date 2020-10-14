@@ -2,16 +2,14 @@ package com.dominikp.mobileapp.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-
-import com.dominikp.mobileapp.R;
 import com.dominikp.mobileapp.databinding.ActivityProfileBinding;
+import com.dominikp.mobileapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
