@@ -6,25 +6,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/blured_forest"
     tools:context=".activity.MainActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="213dp"
+            android:layout_height="174dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            app:srcCompat="@drawable/ic_logo" />
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="213dp"
-                android:layout_height="174dp"
-                android:layout_marginStart="99dp"
-                android:layout_marginTop="60dp"
-                android:layout_marginEnd="99dp"
-                app:srcCompat="@drawable/googleg_standard_color_18" />
+        <LinearLayout
+            android:id="@+id/loginSection"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/imageView"
+            android:background="@color/colorWhite"
+            android:orientation="vertical"
+            android:paddingBottom="15dp">
 
             <EditText
                 android:id="@+id/email"
@@ -52,18 +57,22 @@
                 android:id="@+id/buttonSignin"
                 android:layout_width="386dp"
                 android:layout_height="50dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="15dp"
+                android:layout_marginTop="21dp"
+                android:background="@color/colorGreenDarker"
+                android:padding="16dp"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/colorWhite"
                 android:text="ZALOGUJ" />
 
             <Button
                 android:id="@+id/buttonSingup"
                 android:layout_width="380dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="15dp"
+                android:background="@color/colorGreenDarker"
+                android:padding="16dp"
+                android:textColor="@color/colorWhite"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="21dp"
                 android:text="Załóż konto" />
 
         </LinearLayout>

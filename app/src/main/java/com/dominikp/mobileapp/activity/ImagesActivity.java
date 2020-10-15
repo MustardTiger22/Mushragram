@@ -6,8 +6,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import com.dominikp.mobileapp.R;
 import com.dominikp.mobileapp.adapter.ImageAdapter;
 import com.dominikp.mobileapp.model.Upload;
 import com.dominikp.mobileapp.databinding.ActivityImagesBinding;
@@ -39,6 +44,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
 
         binding = ActivityImagesBinding.inflate(getLayoutInflater());
 
+
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -56,7 +62,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
 
-        mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
+        mDBListener = mDatabaseRef.orderByChild("createdAt").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 //W celu zapobiegnięcia zdublikowania danych podczas zmian tablica zostaje wyczyszczona
@@ -85,8 +91,12 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
             }
         });
 
+        bottomActionBarHandler();
+
         setContentView(binding.getRoot());
     }
+
+
 
     @Override
     public void onItemClick(int position) {
@@ -144,5 +154,25 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
     protected void onDestroy() {
         super.onDestroy();
         mDatabaseRef.removeEventListener(mDBListener);
+    }
+
+    private void bottomActionBarHandler() {
+        binding.bottomNavigation.setSelectedItemId(R.id.menuHome);
+        binding.bottomNavigation.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.menuHome: break;
+
+                case R.id.menuUpload:
+                    startActivity(new Intent(this, UploadActivity.class));
+                    break;
+
+                case R.id.menuLogout:
+                    FirebaseAuth.getInstance().signOut();
+                    finish();
+                    startActivity(new Intent(this, MainActivity.class));
+                    break;
+            }
+            return true;
+        });
     }
 }

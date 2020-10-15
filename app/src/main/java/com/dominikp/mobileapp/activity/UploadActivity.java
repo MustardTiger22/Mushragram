@@ -46,11 +46,12 @@ public class UploadActivity extends AppCompatActivity implements View.OnClickLis
 
         binding.buttonChooseImage.setOnClickListener(this);
         binding.buttonUpload.setOnClickListener(this);
-        binding.showUploads.setOnClickListener(this);
 
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
         mUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        bottomActionBarHandler();
 
         setContentView(binding.getRoot());
     }
@@ -67,9 +68,6 @@ public class UploadActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.buttonChooseImage:
                     openFileChooser();
-                break;
-            case R.id.showUploads:
-                    openImagesActivity();
                 break;
         }
     }
@@ -145,6 +143,25 @@ public class UploadActivity extends AppCompatActivity implements View.OnClickLis
         }
 
 
+    }
+
+    private void bottomActionBarHandler() {
+        binding.bottomNavigation.setSelectedItemId(R.id.menuUpload);
+        binding.bottomNavigation.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.menuHome:
+                    startActivity(new Intent(this, ImagesActivity.class));
+                    break;
+                case R.id.menuUpload: break;
+
+                case R.id.menuLogout:
+                    FirebaseAuth.getInstance().signOut();
+                    finish();
+                    startActivity(new Intent(this, MainActivity.class));
+                    break;
+            }
+            return true;
+        });
     }
 
     private void openImagesActivity() {
