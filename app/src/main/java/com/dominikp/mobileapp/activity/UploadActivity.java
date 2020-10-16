@@ -121,6 +121,7 @@ public class UploadActivity extends AppCompatActivity implements View.OnClickLis
                                 binding.fileName.getText().toString().trim(),
                                 mUser.getDisplayName(),
                                 downloadUrl.toString(),
+                                1,
                                 likes);
 
                         // Wrzucenie do bazy danych wpisu zdjęcia (kto wrzucił itp)
@@ -150,8 +151,10 @@ public class UploadActivity extends AppCompatActivity implements View.OnClickLis
                 case R.id.menuHome:
                     startActivity(new Intent(this, ImagesActivity.class));
                     break;
+                case R.id.menuOverview:
+                    startActivity(new Intent(this, OverviewActivity.class));
+                    break;
                 case R.id.menuUpload: break;
-
                 case R.id.menuLogout:
                     FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(this, MainActivity.class);
@@ -164,7 +167,4 @@ public class UploadActivity extends AppCompatActivity implements View.OnClickLis
         });
     }
 
-    private void openImagesActivity() {
-        startActivity(new Intent(this, ImagesActivity.class));
-    }
 }

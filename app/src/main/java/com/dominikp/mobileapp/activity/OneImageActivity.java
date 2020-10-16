@@ -26,6 +26,7 @@ import com.squareup.picasso.Picasso;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -33,12 +34,14 @@ import java.util.stream.Collectors;
 
 public class OneImageActivity extends AppCompatActivity implements View.OnClickListener {
     private ActivityOneImageBinding binding;
+    private FirebaseUser mUser;
     private DatabaseReference mUpdateRef;
     private DatabaseReference mCommentsRef;
-    private FirebaseUser mUser;
+    private ValueEventListener mCommentsListener;
     private CommentAdapter mAdapter;
     private Upload mUpload;
     private List<Comment> mComments;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +74,7 @@ public class OneImageActivity extends AppCompatActivity implements View.OnClickL
                 .child(itemKey)
                 .child("comments");
 
-        mUpdateRef.addValueEventListener(new ValueEventListener() {
+        mUpdateRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mUpload = snapshot.getValue(Upload.class);
@@ -98,7 +101,7 @@ public class OneImageActivity extends AppCompatActivity implements View.OnClickL
             }
         });
 
-        mCommentsRef.orderByChild("createdAt").addValueEventListener(new ValueEventListener() {
+        mCommentsListener = mCommentsRef.orderByChild("createdAt").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mComments.clear();
@@ -112,6 +115,7 @@ public class OneImageActivity extends AppCompatActivity implements View.OnClickL
                     mComments.add(comment);
                 }
 
+                Collections.reverse(mComments);
                 mAdapter.notifyDataSetChanged();
             }
 
@@ -158,5 +162,11 @@ public class OneImageActivity extends AppCompatActivity implements View.OnClickL
                         Toast.makeText(this, "Dodano komentarz.", Toast.LENGTH_SHORT).show();
                     });
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mCommentsRef.removeEventListener(mCommentsListener);
     }
 }

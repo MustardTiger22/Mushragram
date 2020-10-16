@@ -55,7 +55,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             authorTextView = itemView.findViewById(R.id.commentAuthorTextView);
             createdAtTextView = itemView.findViewById(R.id.commentCreatedAtTextView);
             textTextView = itemView.findViewById(R.id.commentTextView);
-
         }
     }
 }

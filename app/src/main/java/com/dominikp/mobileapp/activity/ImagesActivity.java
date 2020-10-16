@@ -6,17 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-
 import com.dominikp.mobileapp.R;
 import com.dominikp.mobileapp.adapter.ImageAdapter;
 import com.dominikp.mobileapp.model.Upload;
 import com.dominikp.mobileapp.databinding.ActivityImagesBinding;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -27,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -44,7 +40,6 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
         super.onCreate(savedInstanceState);
 
         binding = ActivityImagesBinding.inflate(getLayoutInflater());
-
 
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -79,6 +74,8 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
                     mUploads.add(upload);
                 }
 
+                //Firebase sortuje malejąco, zatem trzeba odwrócić tablice, aby posty były od najnowszych
+                Collections.reverse(mUploads);
                 //Zaktualizuj adapter jezeli wystapily zmiany
                 mAdapter.notifyDataSetChanged();
 
@@ -122,6 +119,8 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
                     .child(mUser.getUid())
                     .setValue(true).addOnSuccessListener(aVoid -> {
                         selectedItem.getLikes().put(mUser.getUid(), true);
+                        selectedItem.incrementLikeCounter();
+                updateLikeCounter(selectedItem, selectedKey);
             });
         } else {
             mDatabaseRef
@@ -131,8 +130,17 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
                     .removeValue()
                     .addOnSuccessListener(aVoid -> {
                         selectedItem.getLikes().remove(mUser.getUid());
+                        selectedItem.decrementLikeCounter();
+                        updateLikeCounter(selectedItem, selectedKey);
                     });
         }
+
+    }
+
+    private void updateLikeCounter(Upload selectedItem, String selectedKey) {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("likeCounter", selectedItem.getLikeCounter());
+        mDatabaseRef.child(selectedKey).updateChildren(result);
     }
 
     @Override
@@ -164,11 +172,12 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
         binding.bottomNavigation.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.menuHome: break;
-
+                case R.id.menuOverview:
+                    startActivity(new Intent(this, OverviewActivity.class));
+                    break;
                 case R.id.menuUpload:
                     startActivity(new Intent(this, UploadActivity.class));
                     break;
-
                 case R.id.menuLogout:
                     FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(this, MainActivity.class);

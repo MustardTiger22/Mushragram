@@ -5,16 +5,17 @@ import java.util.Map;
 
 public class Upload {
     private String mUserId;
+    private String mAuthor;
     private String mTitle;
     private String mImageUrl;
     private String mKey;
-    private String mAuthor;
+    private Integer mLikeCounter;
     private Map<String, Boolean> likes;
 
     public Upload() {
     }
 
-    public Upload(String userId, String title, String author, String imageUrl, Map<String, Boolean> likes) {
+    public Upload(String userId, String title, String author, String imageUrl, Integer likeCounter,  Map<String, Boolean> likes) {
         if(title.trim().equals("")) {
             title = "Bez tytułu";
         }
@@ -23,6 +24,7 @@ public class Upload {
         this.mTitle = title;
         this.mImageUrl = imageUrl;
         this.mAuthor = author;
+        this.mLikeCounter = likeCounter;
         this.likes = likes;
     }
 
@@ -64,6 +66,23 @@ public class Upload {
 
     public void setAuthor(String mAuthor) {
         this.mAuthor = mAuthor;
+    }
+
+
+    public void incrementLikeCounter() {
+        this.mLikeCounter++;
+    }
+
+    public void decrementLikeCounter() {
+        this.mLikeCounter--;
+    }
+
+    public Integer getLikeCounter() {
+        return mLikeCounter;
+    }
+
+    public void setLikeCounter(Integer mLikeCounter) {
+        this.mLikeCounter = mLikeCounter;
     }
 
     @Exclude

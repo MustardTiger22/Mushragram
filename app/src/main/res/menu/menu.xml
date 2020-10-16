@@ -6,17 +6,25 @@
         android:id="@+id/menuHome"
         android:title="Home"
         android:icon="@drawable/ic_mushroom"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/menuOverview"
+        android:title="Przegląd"
+        android:icon="@drawable/ic_crown"
+        app:showAsAction="always"
         />
     <item
         android:id="@+id/menuUpload"
         android:title="Dodaj grzyba"
         android:icon="@drawable/ic_plus"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always"
+        />
     <item
         android:id="@+id/menuLogout"
         android:icon="@drawable/ic_opened_door_"
         android:title="Wyloguj"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always"
+        />
 
 </menu>
