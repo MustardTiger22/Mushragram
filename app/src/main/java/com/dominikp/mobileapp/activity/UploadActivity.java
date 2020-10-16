@@ -22,11 +22,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public class UploadActivity extends AppCompatActivity implements View.OnClickListener {
@@ -103,6 +99,7 @@ public class UploadActivity extends AppCompatActivity implements View.OnClickLis
         if(mImageUri != null) {
             StorageReference fileReference = mStorageRef.child(UUID.randomUUID() + "." + getFileExtension(mImageUri));
 
+            // Wrzucenie zdjecia do Firebase Storage
             mUploadTask = fileReference.putFile(mImageUri)
                     .addOnSuccessListener(task -> {
                         Handler handler = new Handler();
@@ -126,6 +123,7 @@ public class UploadActivity extends AppCompatActivity implements View.OnClickLis
                                 downloadUrl.toString(),
                                 likes);
 
+                        // Wrzucenie do bazy danych wpisu zdjęcia (kto wrzucił itp)
                         String uploadId = mDatabaseRef.push().getKey();
                         mDatabaseRef.child(uploadId).setValue(upload);
                     })
@@ -133,11 +131,10 @@ public class UploadActivity extends AppCompatActivity implements View.OnClickLis
                         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             })
                     .addOnProgressListener(task -> {
+                        //Aktualizacja progress bara
                         double progress = 100.0 * task.getBytesTransferred() / task.getTotalByteCount();
                         binding.progressBar.setProgress((int) progress);
             });
-
-
         } else {
             Toast.makeText(this, "Nie zostało wybrane zdjęcie.", Toast.LENGTH_SHORT).show();
         }
@@ -145,6 +142,7 @@ public class UploadActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
+    // Obsługa dolnej nawigacji
     private void bottomActionBarHandler() {
         binding.bottomNavigation.setSelectedItemId(R.id.menuUpload);
         binding.bottomNavigation.setOnNavigationItemSelectedListener(item -> {
@@ -156,8 +154,10 @@ public class UploadActivity extends AppCompatActivity implements View.OnClickLis
 
                 case R.id.menuLogout:
                     FirebaseAuth.getInstance().signOut();
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                     finish();
-                    startActivity(new Intent(this, MainActivity.class));
                     break;
             }
             return true;

@@ -121,8 +121,6 @@ public class OneImageActivity extends AppCompatActivity implements View.OnClickL
             }
         });
 
-
-
         setContentView(binding.getRoot());
     }
 
@@ -139,20 +137,26 @@ public class OneImageActivity extends AppCompatActivity implements View.OnClickL
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String createdAt = formatter.format(LocalDateTime.now());
 
-        Comment newComment = Comment
-                .builder()
-                .author(mUser.getDisplayName())
-                .text(binding.commentEditTextOneImage.getText().toString().trim())
-                .userId(mUser.getUid())
-                .createdAt(createdAt)
-                .build();
+        String text = binding.commentEditTextOneImage.getText().toString().trim();
 
-        String key = UUID.randomUUID().toString();
-        mCommentsRef.child(key).setValue(newComment)
-                .addOnSuccessListener(aVoid -> {
-                    binding.commentEditTextOneImage.setText("");
-                    binding.commentEditTextOneImage.onEditorAction(EditorInfo.IME_ACTION_DONE);
-                    Toast.makeText(this, "Dodano komentarz.", Toast.LENGTH_SHORT).show();
-                });
+        if(text.length() < 3) {
+            Toast.makeText(this, "Komentarz musi posiadać więcej niż 3 znaki.", Toast.LENGTH_SHORT).show();
+        } else {
+            Comment newComment = Comment
+                    .builder()
+                    .author(mUser.getDisplayName())
+                    .text(text)
+                    .userId(mUser.getUid())
+                    .createdAt(createdAt)
+                    .build();
+
+            String key = UUID.randomUUID().toString();
+            mCommentsRef.child(key).setValue(newComment)
+                    .addOnSuccessListener(aVoid -> {
+                        binding.commentEditTextOneImage.setText("");
+                        binding.commentEditTextOneImage.onEditorAction(EditorInfo.IME_ACTION_DONE);
+                        Toast.makeText(this, "Dodano komentarz.", Toast.LENGTH_SHORT).show();
+                    });
+        }
     }
 }

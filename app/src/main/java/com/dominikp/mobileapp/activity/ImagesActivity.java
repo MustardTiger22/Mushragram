@@ -16,6 +16,7 @@ import com.dominikp.mobileapp.R;
 import com.dominikp.mobileapp.adapter.ImageAdapter;
 import com.dominikp.mobileapp.model.Upload;
 import com.dominikp.mobileapp.databinding.ActivityImagesBinding;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -113,6 +114,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
         Upload selectedItem = mUploads.get(position);
         String selectedKey = selectedItem.getKey();
 
+        // Dodawanie/usuwanie polubienia
         if(!selectedItem.getLikes().containsKey(mUser.getUid())) {
             mDatabaseRef
                     .child(selectedKey)
@@ -156,6 +158,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
         mDatabaseRef.removeEventListener(mDBListener);
     }
 
+    // Obsługa dolnej nawigacji
     private void bottomActionBarHandler() {
         binding.bottomNavigation.setSelectedItemId(R.id.menuHome);
         binding.bottomNavigation.setOnNavigationItemSelectedListener(item -> {
@@ -168,9 +171,10 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
 
                 case R.id.menuLogout:
                     FirebaseAuth.getInstance().signOut();
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                     finish();
-                    startActivity(new Intent(this, MainActivity.class));
-                    break;
             }
             return true;
         });

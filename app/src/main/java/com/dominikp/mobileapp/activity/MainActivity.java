@@ -16,15 +16,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mAuth = FirebaseAuth.getInstance();
 
-        if(FirebaseAuth.getInstance().getCurrentUser()!= null) {
+        // Sprawdzenie, czy użytkownik jest zalogowany
+        if(mAuth.getCurrentUser() != null) {
             Intent intent = new Intent(this, ImagesActivity.class);
+            //Jeżeli użytkownik sie zaloguje nie będzie mogł wrócić do panelu logowania
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
+
         binding.buttonSignin.setOnClickListener(this);
         binding.buttonSingup.setOnClickListener(this);
 
@@ -32,22 +36,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    // Logowanie
     public void signIn() {
         String email = binding.email.getText().toString().trim();
         String password = binding.password.getText().toString().trim();
-        binding.progressBar.setVisibility(View.VISIBLE);
 
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                    binding.progressBar.setVisibility(View.GONE);
-                    if (task.isSuccessful()) {
-                        Intent intent = new Intent(this, ImagesActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(MainActivity.this, "Niepoprawne dane.", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        if(email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(MainActivity.this, "Prosze wypełnić dane logowania.", Toast.LENGTH_SHORT).show();
+        } else {
+            binding.progressBar.setVisibility(View.VISIBLE);
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, task -> {
+                        binding.progressBar.setVisibility(View.GONE);
+                        if (task.isSuccessful()) {
+                            Intent intent = new Intent(this, ImagesActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(MainActivity.this, "Niepoprawne dane.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
     }
 
     @Override

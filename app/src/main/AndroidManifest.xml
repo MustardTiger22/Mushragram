@@ -17,8 +17,6 @@
             android:screenOrientation="portrait" />
         <activity android:name=".activity.UploadActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.ProfileActivity"
-            android:screenOrientation="portrait" />
         <activity android:name=".activity.SignUpActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".activity.MainActivity"

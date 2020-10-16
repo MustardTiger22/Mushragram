@@ -45,6 +45,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         holder.textViewAuthor.setText(uploadCurrent.getAuthor());
         holder.textViewLikeCounter.setText(String.valueOf(uploadCurrent.getLikes().size()));
 
+        if(uploadCurrent.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+            holder.textViewAuthor.setTextColor(Color.rgb(28, 92, 7));
+        }
 
         if(uploadCurrent.getLikes().containsKey(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
             holder.imageHeart.setColorFilter(Color.RED);
@@ -52,6 +55,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             holder.imageHeart.setColorFilter(Color.GRAY);
         }
 
+        // Załadowanie obrazka do widoku
         Picasso.get()
                 .load(uploadCurrent.getImageUrl())
                 .placeholder(R.mipmap.ic_launcher)
