@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
     private Context mContext;
@@ -44,6 +45,15 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         holder.textViewName.setText(uploadCurrent.getTitle());
         holder.textViewAuthor.setText(uploadCurrent.getAuthor());
         holder.textViewLikeCounter.setText(String.valueOf(uploadCurrent.getLikes().size()));
+
+        if(uploadCurrent.getLocation() != null) {
+            StringJoiner uploadLocation = new StringJoiner(", ");
+            uploadLocation.add(uploadCurrent.getLocation().getCity());
+            uploadLocation.add(uploadCurrent.getLocation().getCountry());
+
+            holder.textViewLocation.setVisibility(View.VISIBLE);
+            holder.textViewLocation.setText(uploadLocation.toString());
+        }
 
         if(uploadCurrent.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
             holder.textViewAuthor.setTextColor(Color.rgb(28, 92, 7));
@@ -74,6 +84,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         public TextView textViewName;
         public TextView textViewLikeCounter;
         public TextView textViewAuthor;
+        public TextView textViewLocation;
         public ImageView imageView;
         public ImageView imageHeart;
 
@@ -85,6 +96,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             imageHeart = itemView.findViewById(R.id.heartImageView);
             textViewAuthor = itemView.findViewById(R.id.authorTextView);
             textViewLikeCounter = itemView.findViewById(R.id.likeCounterTextView);
+            textViewLocation = itemView.findViewById(R.id.locationTextView);
 
             itemView.setOnClickListener(this);
             imageHeart.setOnClickListener(this);

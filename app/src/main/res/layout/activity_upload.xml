@@ -6,7 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activity.UploadActivity">
 
-
     <RelativeLayout
         android:id="@+id/insideLayout"
         android:layout_width="match_parent"
@@ -14,35 +13,74 @@
         android:padding="16dp"
         android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/fileName"
+        <LinearLayout
+            android:id="@+id/chooseImageSection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:ems="10"
-            android:layout_alignParentRight="true"
-            android:hint="Tytuł zdjęcia"
-            android:inputType="textPersonName" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/buttonChooseImage"
+            <Button
+                android:id="@+id/buttonChooseImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                android:background="@color/colorGreenDarker"
+                android:padding="16dp"
+                android:textColor="@color/colorWhite"
+                android:text="Wybierz zdjęcie"/>
+
+            <EditText
+                android:id="@+id/fileName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_weight=".5"
+                android:hint="Tytuł zdjęcia"
+                android:inputType="textPersonName" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/localizationSection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/colorGreenDarker"
-            android:padding="16dp"
-            android:text="Wybierz zdjęcie"
-            android:textColor="@color/colorWhite" />
+            android:layout_marginTop="16dp"
+            android:layout_below="@id/chooseImageSection"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/buttonGetLocalization"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorGreenDarker"
+                android:padding="16dp"
+                android:textColor="@color/colorWhite"
+                android:text="DODAJ LOKALIZACJE" />
+
+            <TextView
+                android:id="@+id/localizationLink"
+                android:layout_width="186dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:visibility="gone"
+                android:text="SPRAWDZ LOKALIZACJE"
+                android:textAlignment="center"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="400dp"
-            android:layout_below="@id/buttonChooseImage"
+            android:layout_above="@+id/progressBar"
             android:layout_marginTop="40dp" />
 
         <ProgressBar
-            android:id="@+id/progressBar"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:id="@+id/progressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/buttonUpload"
@@ -59,6 +97,7 @@
             android:layout_centerHorizontal="true"
             android:text="Wrzuć"
             android:textColor="@color/colorWhite" />
+
     </RelativeLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
